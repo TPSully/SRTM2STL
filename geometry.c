@@ -32,7 +32,7 @@
 #include <math.h>
 #include "geometry.h"
 
-coordinate calcNormal(const float v, const float a, const float b)
+coordinate calcNormal2(const float v, const float a, const float b)
 {
    coordinate normal, uu, vv;
 
@@ -41,9 +41,9 @@ coordinate calcNormal(const float v, const float a, const float b)
    uu.y = a - v;
    uu.z = a - v;
 
-   vv.x = a - v;
-   vv.y = a - v;
-   vv.z = a - v;
+   vv.x = b - v;
+   vv.y = b - v;
+   vv.z = b - v;
 
    //Compute the normal
    normal.x = (uu.y * vv.z) - (uu.z * vv.y);
@@ -53,6 +53,69 @@ coordinate calcNormal(const float v, const float a, const float b)
    return normal;
 }
 
+
+coordinate calcNormal22(coordinate *v, coordinate *a, coordinate *b)
+{
+   static coordinate normal, uu, vv;
+   static coordinate t;
+
+   //Take the differences to create VERTEX, A and B for Cross Product
+   uu.x = a->x - v->x;
+   uu.y = a->y - v->y;
+   uu.z = a->z - v->z;
+
+   vv.x = b->x - v->x;
+   vv.y = b->y - v->y;
+   vv.z = b->z - v->z;
+
+   //Compute the normal
+/* tps 5-30-2017
+   normal.x = (uu.y * vv.z) - (uu.z * vv.y);
+   normal.y = -1*((uu.x * vv.z) - (uu.z * vv.x));
+   normal.z = (uu.x * vv.y) - (uu.y * vv.x);
+*/
+   normal.x = (uu.y * vv.z) - (uu.z * vv.y);
+   normal.y = ((uu.z * vv.x) - (uu.x * vv.z));
+   normal.z = (uu.x * vv.y) - (uu.y * vv.x);
+
+   //For now, make the normal vector zero and let the program(s) fix it
+//#define CALC_NORMAL
+#ifdef CALC_NORMAL
+   t.x = normal.x;
+   t.y = normal.y;
+   t.z = normal.z;
+#else
+   t.x = 0.0;
+   t.y = 0.0;
+   t.z = 0.0;
+#endif
+   return t;
+}
+
+//This method, straight off the internet (stack exchange), says:
+
+//Let p1 = (x1,y1,z1)
+//and p2 = (x2,y2,z2)
+//and p3 = (x3,y3,z3)
+
+//then the normal vector i s given by:
+
+//nx  (y2y1)(z3z1)(y3y1)(z2z1)
+//ny  (z2z1)(x3x1)(x2x1)(z3z1)
+//nz  (x2x1)(y3y1)(x3x1)(y2y1)
+
+
+coordinate calcNormal(coordinate *p1, coordinate *p2, coordinate *p3)
+{
+   //static coordinate normal, uu, vv;
+   static coordinate t;
+
+   t.x = ((p2->y - p1->y)*(p3->z - p1->z))-((p3->y - p1->y)*(p2->z - p1->z));
+   t.y = ((p2->z - p1->z)*(p3->x - p1->x))-((p2->x - p1->x)*(p3->z - p1->z));
+   t.z = ((p2->x - p1->x)*(p3->y - p1->y))-((p3->x - p1->x)*(p2->y - p1->y));
+
+   return t;
+}
 
 // From: http://home.att.net/~srschmitt/great_circle_route.html (page doesn't seem to exist anymore)
 

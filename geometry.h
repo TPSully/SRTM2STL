@@ -41,7 +41,8 @@ typedef struct {
 
 
 // calculates normal vector
-coordinate calcNormal(const float v, const float a, const float b);
+coordinate calcNormal(coordinate *v, coordinate *a, coordinate *b);
+//coordinate calcNormal(const float v, const float a, const float b);
 
 // Computes Great Circle Distance
 double distance(double lat1, double lon1, double lat2, double lon2);

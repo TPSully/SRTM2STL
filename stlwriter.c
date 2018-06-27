@@ -58,7 +58,7 @@
        fwrite(&v3->x, sizeof(float), (size_t) 1, out);
        fwrite(&v3->y, sizeof(float), (size_t) 1, out);
        fwrite(&v3->z, sizeof(float), (size_t) 1, out);
-       fwrite(&dummy, sizeof(short), (size_t) 1, out);
+       fwrite(&dummy, sizeof(short), (size_t) 1, out);  //Atribute byte count (should be zero...at least, that's the recommendation)
     }
     else
     {
